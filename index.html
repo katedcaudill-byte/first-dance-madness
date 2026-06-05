@@ -1,74 +1,241 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>First Dance Madness</title>
+
 <style>
 body{
-  background:#0f0f12;
-  color:white;
-  font-family:Arial,sans-serif;
-  margin:0;
-  padding:20px;
+    background:#0f0f12;
+    color:white;
+    font-family:Arial,sans-serif;
+    margin:0;
+    padding:30px;
 }
-h1{color:#b04a86;text-align:center;letter-spacing:3px}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:auto}
+h1{
+    text-align:center;
+    color:#b04a86;
+    letter-spacing:4px;
+}
+.subtitle{
+    text-align:center;
+}
+.name-box{
+    max-width:500px;
+    margin:20px auto;
+}
+input{
+    width:100%;
+    padding:14px;
+    border-radius:10px;
+    border:1px solid #b04a86;
+    background:#18181d;
+    color:white;
+}
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+    max-width:1000px;
+    margin:auto;
+}
 .card{
- background:#18181d;border:1px solid #b04a86;border-radius:12px;
- padding:16px;
+    background:#18181d;
+    border:1px solid #b04a86;
+    border-radius:12px;
+    padding:20px;
 }
-button{
- width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;
- background:#b04a86;color:white;font-size:16px;cursor:pointer;
+.song-btn{
+    width:100%;
+    padding:12px;
+    margin-top:10px;
+    border:none;
+    border-radius:8px;
+    background:#b04a86;
+    color:white;
+    cursor:pointer;
 }
-#results{max-width:700px;margin:30px auto;padding:20px;border:1px solid #b04a86;border-radius:12px}
+.selected{
+    background:#6f284f !important;
+}
+#results{
+    max-width:700px;
+    margin:40px auto;
+    border:1px solid #b04a86;
+    border-radius:12px;
+    padding:20px;
+}
+#submitBtn{
+    display:none;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:8px;
+    background:#b04a86;
+    color:white;
+    cursor:pointer;
+}
 </style>
 </head>
+
 <body>
+
 <h1>FIRST DANCE MADNESS</h1>
-<p style="text-align:center">Vote for your favorites!</p>
+
+<p class="subtitle">Help us choose our first dance song 💜</p>
+
+<div class="name-box">
+<input id="guestName" type="text" placeholder="Your Name">
+</div>
 
 <div class="grid">
+
 <div class="card">
 <h3>Matchup 1</h3>
-<button onclick="vote('Universal Sound')">Universal Sound</button>
-<button onclick="vote('All Your\\'n')">All Your'n</button>
+<button class="song-btn" onclick="selectSong(1,'Universal Sound',this)">Universal Sound</button>
+<button class="song-btn" onclick="selectSong(1,'All Yourn',this)">All Your'n</button>
 </div>
 
 <div class="card">
 <h3>Matchup 2</h3>
-<button onclick="vote('Every Little Kiss')">Every Little Kiss</button>
-<button onclick="vote('Every Girl')">Every Girl</button>
+<button class="song-btn" onclick="selectSong(2,'Every Little Kiss',this)">Every Little Kiss</button>
+<button class="song-btn" onclick="selectSong(2,'Every Girl',this)">Every Girl</button>
 </div>
 
 <div class="card">
 <h3>Matchup 3</h3>
-<button onclick="vote('Tougher Than the Rest')">Tougher Than the Rest</button>
-<button onclick="vote('I\\'m on Fire')">I'm on Fire</button>
+<button class="song-btn" onclick="selectSong(3,'Tougher Than the Rest',this)">Tougher Than the Rest</button>
+<button class="song-btn" onclick="selectSong(3,'Im on Fire',this)">I'm on Fire</button>
 </div>
 
 <div class="card">
 <h3>Matchup 4</h3>
-<button onclick="vote('The Book of Love')">The Book of Love</button>
-<button onclick="vote('Make You Feel My Love')">Make You Feel My Love</button>
+<button class="song-btn" onclick="selectSong(4,'The Book of Love',this)">The Book of Love</button>
+<button class="song-btn" onclick="selectSong(4,'Make You Feel My Love',this)">Make You Feel My Love</button>
 </div>
+
 </div>
 
 <div id="results">
 <h2>Your Picks</h2>
-<ol id="picks"></ol>
-<p>This demo stores votes only in your browser. I can also build a Google Sheets-connected version.</p>
+<ol id="pickList"></ol>
+
+<button id="submitBtn" onclick="submitVotes()">
+Submit Votes
+</button>
+
+<div id="message"></div>
 </div>
 
 <script>
-let picks=[];
-function vote(song){
-  picks.push(song);
-  const li=document.createElement('li');
-  li.textContent=song;
-  document.getElementById('picks').appendChild(li);
+
+const WEBAPP_URL =
+"https://script.google.com/macros/s/AKfycbxDpUtOrbx8qI_iY7XXa1E71uYUIDNXt_GInS3uhbYs3kG0fR4qNbro-k9OZxALkCnwLA/exec";
+
+const selections = {
+matchup1:"",
+matchup2:"",
+matchup3:"",
+matchup4:""
+};
+
+function selectSong(matchup,song,button){
+
+const card = button.parentElement;
+
+card.querySelectorAll(".song-btn")
+.forEach(btn => btn.classList.remove("selected"));
+
+button.classList.add("selected");
+
+selections["matchup"+matchup] = song;
+
+updateDisplay();
+
 }
+
+function updateDisplay(){
+
+const list = document.getElementById("pickList");
+list.innerHTML = "";
+
+Object.values(selections).forEach(song => {
+
+if(song){
+
+const li = document.createElement("li");
+li.textContent = song;
+list.appendChild(li);
+
+}
+
+});
+
+const complete =
+selections.matchup1 &&
+selections.matchup2 &&
+selections.matchup3 &&
+selections.matchup4;
+
+document.getElementById("submitBtn").style.display =
+complete ? "block" : "none";
+
+}
+
+function submitVotes(){
+
+const name =
+document.getElementById("guestName").value.trim();
+
+if(!name){
+
+alert("Please enter your name.");
+return;
+
+}
+
+fetch(WEBAPP_URL,{
+
+method:"POST",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+
+name:name,
+
+matchup1:selections.matchup1,
+matchup2:selections.matchup2,
+matchup3:selections.matchup3,
+matchup4:selections.matchup4
+
+})
+
+})
+
+.then(response => response.text())
+
+.then(data => {
+
+document.getElementById("message").innerHTML =
+"<p>Thank you for voting!</p>";
+
+document.getElementById("submitBtn").disabled = true;
+
+})
+
+.catch(error => {
+
+alert("Error submitting vote.");
+
+});
+
+}
+
 </script>
+
 </body>
 </html>
