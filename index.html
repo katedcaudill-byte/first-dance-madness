@@ -7,74 +7,106 @@
 
 <style>
 body{
-    background:#0f0f12;
-    color:white;
-    font-family:Arial,sans-serif;
-    margin:0;
-    padding:30px;
+  background:#0f0f12;
+  color:#ffffff;
+  font-family:Arial, Helvetica, sans-serif;
+  margin:0;
+  padding:30px;
 }
+
 h1{
-    text-align:center;
-    color:#b04a86;
-    letter-spacing:4px;
+  text-align:center;
+  color:#b04a86;
+  letter-spacing:4px;
 }
+
 .subtitle{
-    text-align:center;
+  text-align:center;
+  margin-bottom:30px;
 }
+
 .name-box{
-    max-width:500px;
-    margin:20px auto;
+  max-width:500px;
+  margin:0 auto 30px auto;
 }
+
 input{
-    width:100%;
-    padding:14px;
-    border-radius:10px;
-    border:1px solid #b04a86;
-    background:#18181d;
-    color:white;
+  width:100%;
+  padding:14px;
+  border-radius:10px;
+  border:1px solid #b04a86;
+  background:#18181d;
+  color:white;
+  box-sizing:border-box;
 }
+
 .grid{
-    display:grid;
-    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
-    gap:20px;
-    max-width:1000px;
-    margin:auto;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+  gap:20px;
+  max-width:1000px;
+  margin:auto;
 }
+
 .card{
-    background:#18181d;
-    border:1px solid #b04a86;
-    border-radius:12px;
-    padding:20px;
+  background:#18181d;
+  border:1px solid #b04a86;
+  border-radius:12px;
+  padding:20px;
 }
+
+.card h3{
+  color:#d68ab8;
+  margin-top:0;
+}
+
 .song-btn{
-    width:100%;
-    padding:12px;
-    margin-top:10px;
-    border:none;
-    border-radius:8px;
-    background:#b04a86;
-    color:white;
-    cursor:pointer;
+  width:100%;
+  padding:12px;
+  margin-top:10px;
+  border:none;
+  border-radius:8px;
+  background:#b04a86;
+  color:white;
+  cursor:pointer;
+  font-size:15px;
 }
+
+.song-btn:hover{
+  opacity:.9;
+}
+
 .selected{
-    background:#6f284f !important;
+  background:#6f284f !important;
 }
+
 #results{
-    max-width:700px;
-    margin:40px auto;
-    border:1px solid #b04a86;
-    border-radius:12px;
-    padding:20px;
+  max-width:700px;
+  margin:40px auto;
+  border:1px solid #b04a86;
+  border-radius:12px;
+  padding:20px;
 }
+
 #submitBtn{
-    display:none;
-    width:100%;
-    padding:14px;
-    border:none;
-    border-radius:8px;
-    background:#b04a86;
-    color:white;
-    cursor:pointer;
+  display:none;
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:8px;
+  background:#b04a86;
+  color:white;
+  cursor:pointer;
+  font-size:16px;
+}
+
+#submitBtn:disabled{
+  opacity:.5;
+}
+
+.success{
+  color:#8fd48f;
+  font-weight:bold;
 }
 </style>
 </head>
@@ -83,7 +115,9 @@ input{
 
 <h1>FIRST DANCE MADNESS</h1>
 
-<p class="subtitle">Help us choose our first dance song 💜</p>
+<p class="subtitle">
+Help us choose our first dance song 💜
+</p>
 
 <div class="name-box">
 <input id="guestName" type="text" placeholder="Your Name">
@@ -131,108 +165,101 @@ Submit Votes
 <script>
 
 const WEBAPP_URL =
-"https://script.google.com/macros/s/AKfycbwpQSKIGV3C2YgTx5xdjt-1FhJ2_CF2rBKVyyuni93iHBDTa3LrCGkA8BNAz8F7crdcEQ/exec";
+"https://script.google.com/macros/s/AKfycbxDpUtOrbx8qI_iY7XXa1E71uYUIDNXt_GInS3uhbYs3kG0fR4qNbro-k9OZxALkCnwLA/exec";
 
 const selections = {
-matchup1:"",
-matchup2:"",
-matchup3:"",
-matchup4:""
+  matchup1:"",
+  matchup2:"",
+  matchup3:"",
+  matchup4:""
 };
 
 function selectSong(matchup,song,button){
 
-const card = button.parentElement;
+  const card = button.parentElement;
 
-card.querySelectorAll(".song-btn")
-.forEach(btn => btn.classList.remove("selected"));
+  card.querySelectorAll(".song-btn")
+      .forEach(btn => btn.classList.remove("selected"));
 
-button.classList.add("selected");
+  button.classList.add("selected");
 
-selections["matchup"+matchup] = song;
+  selections["matchup"+matchup] = song;
 
-updateDisplay();
-
+  updateDisplay();
 }
 
 function updateDisplay(){
 
-const list = document.getElementById("pickList");
-list.innerHTML = "";
+  const list = document.getElementById("pickList");
+  list.innerHTML = "";
 
-Object.values(selections).forEach(song => {
+  Object.values(selections).forEach(song => {
 
-if(song){
+    if(song){
+      const li = document.createElement("li");
+      li.textContent = song;
+      list.appendChild(li);
+    }
 
-const li = document.createElement("li");
-li.textContent = song;
-list.appendChild(li);
+  });
 
-}
+  const complete =
+    selections.matchup1 &&
+    selections.matchup2 &&
+    selections.matchup3 &&
+    selections.matchup4;
 
-});
-
-const complete =
-selections.matchup1 &&
-selections.matchup2 &&
-selections.matchup3 &&
-selections.matchup4;
-
-document.getElementById("submitBtn").style.display =
-complete ? "block" : "none";
-
+  document.getElementById("submitBtn").style.display =
+    complete ? "block" : "none";
 }
 
 function submitVotes(){
 
-const name =
-document.getElementById("guestName").value.trim();
+  const name =
+    document.getElementById("guestName").value.trim();
 
-if(!name){
+  if(!name){
+    alert("Please enter your name.");
+    return;
+  }
 
-alert("Please enter your name.");
-return;
+  document.getElementById("submitBtn").disabled = true;
 
+  fetch(WEBAPP_URL,{
+    method:"POST",
+    mode:"no-cors",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body:JSON.stringify({
+      name:name,
+      matchup1:selections.matchup1,
+      matchup2:selections.matchup2,
+      matchup3:selections.matchup3,
+      matchup4:selections.matchup4
+    })
+  })
+  .then(() => {
+
+    document.getElementById("message").innerHTML =
+      '<p class="success">Thank you for voting!</p>';
+
+  })
+  .catch(error => {
+
+    console.error(error);
+
+    document.getElementById("submitBtn").disabled = false;
+
+    alert("Vote could not be submitted.");
+
+  });
 }
 
-fetch(WEBAPP_URL,{
+</script>
 
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-name:name,
-
-matchup1:selections.matchup1,
-matchup2:selections.matchup2,
-matchup3:selections.matchup3,
-matchup4:selections.matchup4
-
-})
-
-})
-
-.then(response => response.text())
-
-.then(data => {
-
-document.getElementById("message").innerHTML =
-"<p>Thank you for voting!</p>";
-
-document.getElementById("submitBtn").disabled = true;
-
-})
-
-.catch(error => {
-  alert(error);
-  console.log(error);
-});
-
-}
+</body>
+</html>
 
 </script>
 
