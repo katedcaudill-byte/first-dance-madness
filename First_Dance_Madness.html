@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>First Dance Madness</title>
+<style>
+body{
+  background:#0f0f12;
+  color:white;
+  font-family:Arial,sans-serif;
+  margin:0;
+  padding:20px;
+}
+h1{color:#b04a86;text-align:center;letter-spacing:3px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;max-width:900px;margin:auto}
+.card{
+ background:#18181d;border:1px solid #b04a86;border-radius:12px;
+ padding:16px;
+}
+button{
+ width:100%;padding:12px;margin:8px 0;border:none;border-radius:8px;
+ background:#b04a86;color:white;font-size:16px;cursor:pointer;
+}
+#results{max-width:700px;margin:30px auto;padding:20px;border:1px solid #b04a86;border-radius:12px}
+</style>
+</head>
+<body>
+<h1>FIRST DANCE MADNESS</h1>
+<p style="text-align:center">Vote for your favorites!</p>
+
+<div class="grid">
+<div class="card">
+<h3>Matchup 1</h3>
+<button onclick="vote('Universal Sound')">Universal Sound</button>
+<button onclick="vote('All Your\\'n')">All Your'n</button>
+</div>
+
+<div class="card">
+<h3>Matchup 2</h3>
+<button onclick="vote('Every Little Kiss')">Every Little Kiss</button>
+<button onclick="vote('Every Girl')">Every Girl</button>
+</div>
+
+<div class="card">
+<h3>Matchup 3</h3>
+<button onclick="vote('Tougher Than the Rest')">Tougher Than the Rest</button>
+<button onclick="vote('I\\'m on Fire')">I'm on Fire</button>
+</div>
+
+<div class="card">
+<h3>Matchup 4</h3>
+<button onclick="vote('The Book of Love')">The Book of Love</button>
+<button onclick="vote('Make You Feel My Love')">Make You Feel My Love</button>
+</div>
+</div>
+
+<div id="results">
+<h2>Your Picks</h2>
+<ol id="picks"></ol>
+<p>This demo stores votes only in your browser. I can also build a Google Sheets-connected version.</p>
+</div>
+
+<script>
+let picks=[];
+function vote(song){
+  picks.push(song);
+  const li=document.createElement('li');
+  li.textContent=song;
+  document.getElementById('picks').appendChild(li);
+}
+</script>
+</body>
+</html>
