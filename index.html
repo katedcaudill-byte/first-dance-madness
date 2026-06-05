@@ -228,9 +228,8 @@ document.getElementById("submitBtn").disabled = true;
 })
 
 .catch(error => {
-
-alert("Error submitting vote.");
-
+  alert(error);
+  console.log(error);
 });
 
 }
